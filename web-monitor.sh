@@ -1,60 +1,60 @@
 #!/bin/bash
 
 # Global variables
-export VERSION="1.0"
-export PORT="8080"
+export version="1.0"
+export port="8080"
 
 # Color variables
-export RED="\e[1;31m"
-export GREEN="\e[1;32m"
-export YELLOW="\e[1;33m"
-export CYAN="\e[1;36m"
-export GRAY="\e[1;90m"
-export BOLD="\e[1m"
-export ENDCOLOR="\e[0m"
+export red="\e[1;31m"
+export green="\e[1;32m"
+export yellow="\e[1;33m"
+export cyan="\e[1;36m"
+export gray="\e[1;90m"
+export bold="\e[1m"
+export endColor="\e[0m"
 
 # Info variables
-export SUCCESS="${GRAY}[${GREEN}✓${GRAY}]${ENDCOLOR}"
-export ERROR="${RED}Error:${ENDCOLOR}"
-export WARNING="${GRAY}[${RED}!${GRAY}]${ENDCOLOR}"
-export SECTION="${GRAY}[${YELLOW}!${GRAY}]${ENDCOLOR}"
-export INFO="${GRAY}[${CYAN}i${GRAY}]${ENDCOLOR}"
+export success="${gray}[${green}✓${gray}]${endColor}"
+export error="${red}Error:${endColor}"
+export warning="${gray}[${red}!${gray}]${endColor}"
+export section="${gray}[${yellow}!${gray}]${endColor}"
+export info="${gray}[${cyan}i${gray}]${endColor}"
 
 # Functions
-check_args() {
+checkArgs() {
     case $1 in
     "start")
-        start_service
+        startService
         ;;
     "stop")
-        stop_service
+        stopService
         ;;
     "restart")
-        stop_service
-        start_service
+        stopService
+        startService
         ;;
     "status")
-        show_status
+        showStatus
         ;;
     "help")
-        show_help
+        showHelp
         ;;
     "version")
-        show_version
+        showVersion
         ;;
     "")
-        echo -e "${ERROR} no operation specified. Use $0 help"
+        echo -e "${error} no operation specified. Use $0 help"
         exit 1
         ;;
     *)
-        echo -e "${ERROR} unrecognized option '$1'. Use $0 help"
+        echo -e "${error} unrecognized option '$1'. Use $0 help"
         exit 1
         ;;
     esac
 }
 
-find_temp_path() {
-    local potential_paths=(
+findTempPath() {
+    local potentialPaths=(
         "/sys/class/thermal/thermal_zone0/temp"
         "/sys/class/thermal/thermal_zone1/temp"
         "/sys/class/hwmon/hwmon0/temp1_input"
@@ -62,50 +62,50 @@ find_temp_path() {
         "/sys/class/hwmon/hwmon0/temp2_input"
         "/sys/class/hwmon/hwmon1/temp2_input"
     )
-    for path in "${potential_paths[@]}"; do
+    for path in "${potentialPaths[@]}"; do
         if [[ -f "$path" ]]; then
             # Check if the sensor returns a valid value
-            temp_value=$(cat "$path")
-            if [[ $temp_value =~ ^[0-9]+$ ]]; then
-                TEMP_PATH="$path"
+            tempValue=$(cat "$path")
+            if [[ $tempValue =~ ^[0-9]+$ ]]; then
+                tempPath="$path"
                 return 0
             fi
         fi
     done
 }
 
-get_data() {
+getData() {
     # System Overview
-    show_hostname=$(cat /etc/hostname)
-    show_kernel=$(uname -r)
-    show_uptime=$(uptime -p | sed 's/up //')
+    showHostname=$(cat /etc/hostname)
+    showKernel=$(uname -r)
+    showUptime=$(uptime -p | sed 's/up //')
     if [[ -f "/etc/machine-id" ]]; then
-        show_age=$((($(date +%s) - $(date -r "/etc/machine-id" +%s)) / 86400))
+        showAge=$((($(date +%s) - $(date -r "/etc/machine-id" +%s)) / 86400))
     else
-        show_age="Error: File not found"
+        showAge="Error: File not found"
     fi
-    show_cpu=$(uptime | awk -F 'load average:' '{ print $2 }' | xargs)
-    show_cpu_temp=$(($(cat "$TEMP_PATH") / 1000))
-    show_ram=$(free -m | awk 'NR==2{used=$3; total=$2; printf "%dmb / %dmb (%.0f%%)", used, total, used/total*100}')
-    show_disk_full=$(df -h --total | awk '/total/ {printf "%s / %s (%s)", $3, $2, $5}')
-    show_local_ip=$(ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v '127.0.0.1' | head -n 1)
+    showCpu=$(uptime | awk -F 'load average:' '{ print $2 }' | xargs)
+    showCpuTemp=$(($(cat "$tempPath") / 1000))
+    showRam=$(free -m | awk 'NR==2{used=$3; total=$2; printf "%dmb / %dmb (%.0f%%)", used, total, used/total*100}')
+    showDiskFull=$(df -h --total | awk '/total/ {printf "%s / %s (%s)", $3, $2, $5}')
+    showLocalIp=$(ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v '127.0.0.1' | head -n 1)
 
     # System Stats
-    show_cpu_stat=$(lscpu | grep "Model name" | sed 's/Model name: //')
-    cpu_percentage=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1}')
+    showCpuStat=$(lscpu | grep "Model name" | sed 's/Model name: //')
+    cpuPercentage=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1}')
 
-    show_ram_stat=$(free -g | awk 'NR==2{used=$3; total=$2; printf "%dGb / %dGb (%.0f%%)", used, total, used/total*100}')
-    ram_percentage=$(free -m | awk 'NR==2{used=$3; total=$2; printf "%.0f", used/total*100}')
+    showRamStat=$(free -g | awk 'NR==2{used=$3; total=$2; printf "%dGb / %dGb (%.0f%%)", used, total, used/total*100}')
+    ramPercentage=$(free -m | awk 'NR==2{used=$3; total=$2; printf "%.0f", used/total*100}')
 
-    show_disk_root=$(df -h / | awk 'NR==2{printf "%s / %s (%s)", $3, $2, $5}')
+    showDiskRoot=$(df -h / | awk 'NR==2{printf "%s / %s (%s)", $3, $2, $5}')
 
-    show_network_stat=$(lspci | grep -i "Ethernet" | sed 's/.*Ethernet controller: //' | cut -c 1-32)
+    showNetworkStat=$(lspci | grep -i "Ethernet" | sed 's/.*Ethernet controller: //' | cut -c 1-32)
 
-    # Foother
-    current_time=$(date +"%d-%m-%Y %H:%M:%S")
+    # Footer
+    currentTime=$(date +"%d-%m-%Y %H:%M:%S")
 }
 
-export_response() {
+exportResponse() {
     export response="<!DOCTYPE html>
 <html lang='en'>
 
@@ -231,26 +231,26 @@ export_response() {
             <h1>Overview</h1>
             <h3>System Information:</h3>
             <div class='info'>
-                <span>Hostname:</span> ${show_hostname}
+                <span>Hostname:</span> ${showHostname}
             </div>
             <div class='info'>
-                <span>Uptime:</span> ${show_uptime}
+                <span>Uptime:</span> ${showUptime}
             </div>
             <div class='info'>
-                <span>Age:</span> ${show_age} days
+                <span>Age:</span> ${showAge} days
             </div>
             <h3>Hardware:</h3>
             <div class='info'>
-                <span>Kernel:</span> ${show_kernel}
+                <span>Kernel:</span> ${showKernel}
             </div>
             <div class='info'>
-                <span>Cpu-load:</span> ${show_cpu}
+                <span>Cpu-load:</span> ${showCpu}
             </div>
             <div class='info'>
-                <span>Cpu-temp:</span> ${show_cpu_temp}°C
+                <span>Cpu-temp:</span> ${showCpuTemp}°C
             </div>
             <div class='info'>
-                <span>Ram:</span> ${show_ram}
+                <span>Ram:</span> ${showRam}
             </div>
         </div>
         <div class='panel'>
@@ -258,77 +258,77 @@ export_response() {
             <div class='stats'>
                 <div class='stat'>
                     <h3>Processor</h3>
-                    <p>${show_cpu_stat}</p>
+                    <p>${showCpuStat}</p>
                     <div class='graph'>
-                        <div class='graph-bar' style='width: ${cpu_percentage}%;'></div>
+                        <div class='graph-bar' style='width: ${cpuPercentage}%;'></div>
                     </div>
                 </div>
                 <div class='stat'>
                     <h3>Disk</h3>
-                    <p>Full ${show_disk_full}</p>
-                    <p>Root ${show_disk_root}</p>
+                    <p>Full ${showDiskFull}</p>
+                    <p>Root ${showDiskRoot}</p>
                 </div>
                 <div class='stat'>
                     <h3>Ram</h3>
-                    <p>${show_ram_stat}</p>
+                    <p>${showRamStat}</p>
                     <div class='graph'>
-                        <div class='graph-bar' style='width: ${ram_percentage}%;'></div>
+                        <div class='graph-bar' style='width: ${ramPercentage}%;'></div>
                     </div>
                 </div>
                 <div class='stat'>
                     <h3>Network</h3>
-                    <p>${show_network_stat}</p>
-                    <p>${show_local_ip}</p>
+                    <p>${showNetworkStat}</p>
+                    <p>${showLocalIp}</p>
                 </div>
             </div>
         </div>
         <div class='footer'>
-            <p>Dashboard By Justus0405 | Last Updated: ${current_time}</p>
+            <p>Dashboard By Justus0405 | Last Updated: ${currentTime}</p>
         </div>
 </body>
 
 </html>"
 }
 
-start_service() {
-    find_temp_path
+startService() {
+    findTempPath
     while :; do
-        get_data
-        export_response
-        echo -e "HTTP/1.1 200 OK\nContent-Type: text/html\n\n$response" | nc -l -k -p $PORT -q 1 || {
-            echo -e "${ENDCOLOR} netcat is not installed. Please install it either 'netcat-openbsd' or 'openbsd-netcat'"
+        getData
+        exportResponse
+        echo -e "HTTP/1.1 200 OK\nContent-Type: text/html\n\n$response" | nc -l -k -p $port -q 1 || {
+            echo -e "${endColor} netcat is not installed. Please install it either 'netcat-openbsd' or 'openbsd-netcat'"
             exit 1
         }
     done &
-    echo $! >".server_pid"
-    echo -e "${SUCCESS} Started server on port: $PORT"
+    echo $! >".serverPid"
+    echo -e "${success} Started server on port: $port"
 }
 
-stop_service() {
-    if [ -f ".server_pid" ]; then
-        PID=$(cat ".server_pid")
-        if kill -9 "$PID" >/dev/null 2>&1; then
-            echo -e "${SUCCESS} Stopped server with PID: $PID"
-            rm -f ".server_pid"
+stopService() {
+    if [ -f ".serverPid" ]; then
+        pid=$(cat ".serverPid")
+        if kill -9 "$pid" >/dev/null 2>&1; then
+            echo -e "${success} Stopped server with PID: $pid"
+            rm -f ".serverPid"
         else
-            echo -e "${ERROR} Failed to stop server. Process may not be running."
+            echo -e "${error} Failed to stop server. Process may not be running."
         fi
     else
-        echo -e "${INFO} No server PID found. Server is not running."
+        echo -e "${info} No server PID found. Server is not running."
     fi
 }
 
-show_status() {
-    if [ -f ".server_pid" ]; then
-        PID=$(cat ".server_pid")
-        echo -e "${INFO} Server is running with PID: $PID"
+showStatus() {
+    if [ -f ".serverPid" ]; then
+        pid=$(cat ".serverPid")
+        echo -e "${info} Server is running with PID: $pid"
     else
-        echo -e "${INFO} No server PID found. Server is not running."
+        echo -e "${info} No server PID found. Server is not running."
     fi
     exit 0
 }
 
-show_help() {
+showHelp() {
     echo -e "usage: $0 [...]"
     echo -e "arguments:"
     echo -e "    start"
@@ -341,8 +341,8 @@ show_help() {
     exit 0
 }
 
-show_version() {
-    echo -e "               web-monitor v$VERSION - bash 5.2.37"
+showVersion() {
+    echo -e "               web-monitor v$version - bash 5.2.37"
     echo -e "               Copyright (C) 2025-present Justus0405"
     echo -e ""
     exit 0
@@ -350,4 +350,4 @@ show_version() {
 
 # PROGRAM START
 
-check_args "$@"
+checkArgs "$@"
