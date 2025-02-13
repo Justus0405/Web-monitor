@@ -283,7 +283,7 @@ export_response() {
             </div>
         </div>
         <div class='footer'>
-            <p>System Information Dashboard By Justus0405 | Last Updated: ${current_time}</p>
+            <p>Dashboard By Justus0405 | Last Updated: ${current_time}</p>
         </div>
 </body>
 
@@ -325,6 +325,7 @@ show_status() {
     else
         echo -e "${INFO} No server PID found. Server is not running."
     fi
+    exit 0
 }
 
 show_help() {
@@ -344,6 +345,7 @@ show_version() {
     echo -e "               web-monitor v$VERSION - bash 5.2.37"
     echo -e "               Copyright (C) 2025-present Justus0405"
     echo -e ""
+    exit 0
 }
 
 # PROGRAM START
