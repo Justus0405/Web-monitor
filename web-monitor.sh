@@ -311,7 +311,7 @@ stopService() {
             echo -e "${success} Stopped server with PID: $pid"
             rm -f ".serverPid"
         else
-            echo -e "${error} No PID associated with that process. Did the server crash? Removed Cache..."
+            echo -e "${error} No PID associated with that process. Did the server crash? Removing Cache..."
             rm -f ".serverPid"
         fi
     else
