@@ -291,12 +291,16 @@ exportResponse() {
 }
 
 startService() {
+    if [ -f ".serverPid" ]; then
+        echo -e "${error} Server is already running."
+        exit 1
+    fi
     findTempPath
     while :; do
         getData
         exportResponse
         echo -e "HTTP/1.1 200 OK\nContent-Type: text/html\n\n$response" | nc -l -k -p $port -q 1 || {
-            echo -e "${endColor} netcat is not installed. Please install it either 'netcat-openbsd' or 'openbsd-netcat'"
+            echo -e "${error} netcat is not installed. Please install it either 'netcat-openbsd' or 'openbsd-netcat'"
             exit 1
         }
     done &
