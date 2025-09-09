@@ -104,33 +104,33 @@ findTempPath() {
 
 getData() {
     ### System Overview
-    export showHostname=$(cat /etc/hostname)
-    export showKernel=$(uname -r)
-    export showUptime=$(uptime -p | sed 's/up //')
+    showHostname=$(cat /etc/hostname)
+    showKernel=$(uname -r)
+    showUptime=$(uptime -p | sed 's/up //')
     if [[ -f "/etc/machine-id" ]]; then
-        export showAge=$((($(date +%s) - $(date -r "/etc/machine-id" +%s)) / 86400))
+        showAge=$((($(date +%s) - $(date -r "/etc/machine-id" +%s)) / 86400))
     else
-        export showAge="Error: File not found"
+        showAge="Error: File not found"
     fi
-    export showCpu=$(uptime | awk -F 'load average:' '{ print $2 }' | xargs)
-    export showCpuTemp=$(($(cat "$tempPath") / 1000))
-    export showRam=$(free -m | awk 'NR==2{used=$3; total=$2; printf "%dmb / %dmb (%.0f%%)", used, total, used/total*100}')
-    export showDiskFull=$(df -h --total | awk '/total/ {printf "%s / %s (%s)", $3, $2, $5}')
-    export showLocalIp=$(ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v '127.0.0.1' | head -n 1)
+    showCpu=$(uptime | awk -F 'load average:' '{ print $2 }' | xargs)
+    showCpuTemp=$(($(cat "$tempPath") / 1000))
+    showRam=$(free -m | awk 'NR==2{used=$3; total=$2; printf "%dmb / %dmb (%.0f%%)", used, total, used/total*100}')
+    showDiskFull=$(df -h --total | awk '/total/ {printf "%s / %s (%s)", $3, $2, $5}')
+    showLocalIp=$(ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v '127.0.0.1' | head -n 1)
 
     ### System Stats
-    export showCpuStat=$(lscpu | grep "Model name" | sed 's/Model name: //')
-    export cpuPercentage=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1}')
+    showCpuStat=$(lscpu | grep "Model name" | sed 's/Model name: //')
+    cpuPercentage=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1}')
 
-    export showRamStat=$(free -g | awk 'NR==2{used=$3; total=$2; printf "%dGb / %dGb (%.0f%%)", used, total, used/total*100}')
-    export ramPercentage=$(free -m | awk 'NR==2{used=$3; total=$2; printf "%.0f", used/total*100}')
+    showRamStat=$(free -g | awk 'NR==2{used=$3; total=$2; printf "%dGb / %dGb (%.0f%%)", used, total, used/total*100}')
+    ramPercentage=$(free -m | awk 'NR==2{used=$3; total=$2; printf "%.0f", used/total*100}')
 
-    export showDiskRoot=$(df -h / | awk 'NR==2{printf "%s / %s (%s)", $3, $2, $5}')
+    showDiskRoot=$(df -h / | awk 'NR==2{printf "%s / %s (%s)", $3, $2, $5}')
 
-    export showNetworkStat=$(lspci | grep -i "Ethernet" | sed 's/.*Ethernet controller: //' | cut -c 1-32)
+    showNetworkStat=$(lspci | grep -i "Ethernet" | sed 's/.*Ethernet controller: //' | cut -c 1-32)
 
     ### Footer
-    export currentTime=$(date +"%d-%m-%Y %H:%M:%S")
+    currentTime=$(date +"%d-%m-%Y %H:%M:%S")
 }
 
 exportResponse() {
