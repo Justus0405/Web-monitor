@@ -1,4 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# Web Monitoring in bash
+#
+# Author: Justus0405
+# Date: 13.02.2025
+# License: MIT
 
 # Global variables
 export version="1.0"
@@ -43,11 +49,11 @@ checkArgs() {
         showVersion
         ;;
     "")
-        echo -e "${error} no operation specified. Use $0 help"
+        echo -e "${error} no operation specified. Use $(basename "$0") help"
         exit 1
         ;;
     *)
-        echo -e "${error} unrecognized option '$1'. Use $0 help"
+        echo -e "${error} unrecognized option '$1'. Use $(basename "$0") help"
         exit 1
         ;;
     esac
@@ -334,7 +340,7 @@ showStatus() {
 }
 
 showHelp() {
-    echo -e "usage: $0 [...]"
+    echo -e "usage: $(basename "$0") [...]"
     echo -e "arguments:"
     echo -e "    start"
     echo -e "    stop"
@@ -347,7 +353,7 @@ showHelp() {
 }
 
 showVersion() {
-    echo -e "               web-monitor v$version - bash 5.2.37"
+    echo -e "               $(basename "$0") v${version} - GNU bash, version 5.3"
     echo -e "               Copyright (C) 2025-present Justus0405"
     echo -e ""
     exit 0
