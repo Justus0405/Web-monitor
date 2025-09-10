@@ -63,7 +63,7 @@ logMessage() {
     esac
 }
 
-checkArguments() {
+getArguments() {
     case "$1" in
     "start")
         startService
@@ -392,4 +392,4 @@ printVersion() {
 }
 
 ### PROGRAM START ###
-checkArguments "$@"
+getArguments "$@"
