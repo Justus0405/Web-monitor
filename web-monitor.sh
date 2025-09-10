@@ -6,7 +6,7 @@
 # Date: 13.02.2025
 # License: MIT
 
-export scriptVersion="1.0"
+export scriptVersion="1.1"
 
 ## USER CONFIGURATION START
 
@@ -22,14 +22,26 @@ export yellow="\e[1;33m"
 export blue="\e[1;34m"
 export purple="\e[1;35m"
 export cyan="\e[1;36m"
-export white="\e[1;37m"
+export lightGray="\e[1;37m"
+export gray="\e[1;90m"
+export lightRed="\e[1;91m"
+export lightGreen="\e[1;92m"
+export lightYellow="\e[1;93m"
+export lightBlue="\e[1;94m"
+export lightPurple="\e[1;95m"
+export lightCyan="\e[1;96m"
+export white="\e[1;97m"
 export bold="\e[1m"
+export faint="\e[2m"
+export italic="\e[3m"
+export underlined="\e[4m"
+export blinking="\e[5m"
 export reset="\e[0m"
 
 ### FUNCTIONS ###
 logMessage() {
-    local type=$1
-    local message=$2
+    local type="$1"
+    local message="$2"
     case "${type}" in
     "info" | "INFO")
         echo -e "[  ${cyan}INFO${reset}  ] ${message}"
@@ -52,7 +64,7 @@ logMessage() {
 }
 
 checkArguments() {
-    case $1 in
+    case "$1" in
     "start")
         startService
         ;;
@@ -103,7 +115,7 @@ findTempPath() {
 }
 
 getData() {
-    ### System Overview
+    ### System Overview ###
     showHostname=$(cat /etc/hostname)
     showKernel=$(uname -r)
     showUptime=$(uptime -p | sed 's/up //')
@@ -118,7 +130,7 @@ getData() {
     showDiskFull=$(df -h --total | awk '/total/ {printf "%s / %s (%s)", $3, $2, $5}')
     showLocalIp=$(ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v '127.0.0.1' | head -n 1)
 
-    ### System Stats
+    ### System Stats ###
     showCpuStat=$(lscpu | grep "Model name" | sed 's/Model name: //')
     cpuPercentage=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1}')
 
@@ -129,7 +141,7 @@ getData() {
 
     showNetworkStat=$(lspci | grep -i "Ethernet" | sed 's/.*Ethernet controller: //' | cut -c 1-32)
 
-    ### Footer
+    ### Footer ###
     currentTime=$(date +"%d-%m-%Y %H:%M:%S")
 }
 
@@ -330,7 +342,7 @@ startService() {
             logMessage "error" "netcat is not installed. Please install it either 'netcat-openbsd' or 'openbsd-netcat'"
         }
     done &
-    echo $! >".serverPid"
+    echo "$!" >".serverPid"
     logMessage "done" "Started server on port: ${port}"
 }
 
@@ -362,12 +374,12 @@ printStatus() {
 printHelp() {
     echo -e "usage: $(basename "$0") [...]"
     echo -e "arguments:"
-    echo -e "    start"
-    echo -e "    stop"
-    echo -e "    restart"
-    echo -e "    status"
-    echo -e "    help"
-    echo -e "    version"
+    echo -e "\t start"
+    echo -e "\t stop"
+    echo -e "\t restart"
+    echo -e "\t status"
+    echo -e "\t help"
+    echo -e "\t version"
     echo -e ""
     exit 0
 }
