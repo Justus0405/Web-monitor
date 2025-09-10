@@ -2,7 +2,7 @@
     <!-- Discord Badge -->
     <a href="https://discord.justus0405.com/"><img src="https://img.shields.io/discord/1370519315400495234?logo=Discord&colorA=1e1e2e&colorB=a6e3a1&style=for-the-badge"></a>
     <!-- Version Badge -->
-    <a href="https://github.com/Justus0405/Web-monitor/blob/main/Web-monitor.sh"><img src="https://img.shields.io/badge/Version-1.0-blue?colorA=1e1e2e&colorB=cdd6f4&style=for-the-badge"></a>
+    <a href="https://github.com/Justus0405/Web-monitor/blob/main/web-monitor.sh"><img src="https://img.shields.io/badge/Version-1.1-blue?colorA=1e1e2e&colorB=cdd6f4&style=for-the-badge"></a>
 </p>
 
 <p align="left">
@@ -28,32 +28,39 @@ It's like Neofetch with a lot of extra steps.
 
 1. Clone the repository:
 
-   ```shell
-   git clone https://github.com/Justus0405/Web-monitor.git
-   ```
+```shell
+git clone https://github.com/Justus0405/Web-monitor.git
+```
 
 2. Navigate to the directory:
 
-   ```shell
-   cd Web-monitor
-   ```
+```shell
+cd Web-monitor
+```
 
-3. Run the script with the start argument:
-   ```shell
-   ./web-monitor start
-   ```
+3. Make the script executable:
+
+```shell
+chmod +x web-monitor.sh
+```
+
+4. Run the script:
+
+```shell
+./web-monitor.sh
+```
 
 ## Usage
 
 ```plaintext
-    usage:  ./web-monitor.sh [...]
-    arguments:
-        start
-        stop
-        restart
-        status
-        help
-        version
+usage: ./web-monitor.sh [...]
+arguments:
+         start
+         stop
+         restart
+         status
+         help
+         version
 ```
 
 #
