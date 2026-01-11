@@ -29,7 +29,7 @@ It's like Neofetch with a lot of extra steps.
 1. Clone the repository:
 
 ```shell
-git clone https://github.com/Justus0405/Web-monitor.git
+git clone --depth 1 https://github.com/Justus0405/Web-monitor.git
 ```
 
 2. Navigate to the directory:
